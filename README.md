@@ -1,4 +1,4 @@
-# qqwry.dat [![qqwry](https://github.com/FW27623/qqwry/actions/workflows/qqwry.yml/badge.svg)](https://github.com/FW27623/qqwry/actions/workflows/qqwry.yml)
+# qqwry.dat.exchange 
 **纯真IP数据库文件，dat数据非exe安装包，使用 Github Action 定时获得最新版本的IP库文件，每天会扫描两次（17:55和23:55），当发现更新时也可以选择手动运行来获得文件。**
 
 **本仓库如果有帮助到您的话可以点点 [Star⭐](https://github.com/FW27623/qqwry)支持下。**
@@ -11,6 +11,7 @@
 # 感谢
 -  借鉴 [HMBSbige](https://github.com/HMBSbige)/[qqwry](https://github.com/HMBSbige/qqwry) 的 `workflow` 写法
 -  使用 [dscharrer](https://github.com/dscharrer)/[innoextract](https://github.com/dscharrer/innoextract) 对获取到的 exe 文件进行解包操作
+-  本项目基于FW27623/qqwry项目修改
 
 # 更新点
 
