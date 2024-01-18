@@ -34,6 +34,10 @@
 - 然后再新建两个变量 `GIT_USERNAME` 和 `GIT_EMAIL`  ，这两个填你自己的就好了，然后保存，运行 Action ，不出意外的话你应该很快就能看到最新的IP库了。
 
   <p align=center><img src="https://pic.1016.site/file/e4011db8b992a5da6a28b.png" style="zoom:50%;" /></p>
+# 本项目自动输出ip_info_output.txt文件
+- 定时输出
+- main.py自动解密
+
 
 # Thanks
 
