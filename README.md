@@ -11,7 +11,7 @@
 # 感谢
 -  借鉴 [HMBSbige](https://github.com/HMBSbige)/[qqwry](https://github.com/HMBSbige/qqwry) 的 `workflow` 写法
 -  使用 [dscharrer](https://github.com/dscharrer)/[innoextract](https://github.com/dscharrer/innoextract) 对获取到的 exe 文件进行解包操作
--  本项目基于FW27623/qqwry项目修改
+-  本项目基于[FW27623/qqwry](https://github.com/FW27623/qqwry)项目修改
 
 # 更新点
 
