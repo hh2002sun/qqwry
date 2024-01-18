@@ -1,7 +1,7 @@
 # qqwry.dat.exchange 
 **纯真IP数据库文件，dat数据非exe安装包，使用 Github Action 定时获得最新版本的IP库文件，每天会扫描两次（17:55和23:55），当发现更新时也可以选择手动运行来获得文件。**
 
-**本仓库如果有帮助到您的话可以点点 [Star⭐](https://github.com/FW27623/qqwry)支持下。**
+**本仓库如果有帮助到您的话可以点点 [Star⭐](https://github.com/hh2002sun/qqwry)支持下。**
 
 # 目录说明
  1、[`qqwry.dat` ](https://raw.githubusercontent.com/FW27623/qqwry/main/qqwry.dat) 为最新数据直链（即下即用），每次更新会覆盖之前的内容，如果想要某个时间段的历史数据可在 [` Release ` ](https://github.com/FW27623/qqwry/releases) 里进行查看。
