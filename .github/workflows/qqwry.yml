@@ -150,5 +150,8 @@ jobs:
             git push
           fi
       - name: Run main.py
-        run: python main.py
-         fi
+        run: |
+          python main.py  # 这里假设你的 main.py 是在根目录下
+          mv ip_info_output.txt qqwry.dat ../  # 将文件移动到与 qqwry.dat 相同的目录
+
+  
