@@ -11,7 +11,7 @@ on:
 env:
   innoextract_version: 1.9
   arch: amd64
- 
+
 permissions:
   contents: write
 
@@ -21,26 +21,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Caching dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: | 
+          restore-keys: |
             ${{ runner.os }}-pip-
-      
+
       - name: Install dependencies
         run: |
           pip install requests
           pip install bs4
-      
+
       - name: Get download link from WeChat tweet
         run: |
           link=$(python qqwry.py)
@@ -48,8 +48,8 @@ jobs:
             echo "No link found, exiting"
             exit 0
           fi
-            echo "LINK=${link}" >> $GITHUB_ENV
-      
+          echo "LINK=${link}" >> $GITHUB_ENV
+
       - name: Use link to download newest Zip with retry
         run: |
           link=${{ env.LINK }}
@@ -65,18 +65,20 @@ jobs:
             retries=$((retries+1))
             sleep 10
           done
+
       - name: Cache innoextract
         uses: actions/cache@v3
         id: cache-innoextract
         with:
           path: innoextract
           key: ${{ runner.os }}-innoextract-${{ env.innoextract_version }}
-      
+
       - name: Download innoextract
         if: steps.cache-innoextract.outputs.cache-hit != 'true'
         run: |
           wget https://github.com/dscharrer/innoextract/releases/download/${{ env.innoextract_version }}/innoextract-${{ env.innoextract_version }}-linux.tar.xz
           tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.arch }}/innoextract --strip-components 3
+
       - name: Get qqwry.dat
         id: dat_date
         shell: pwsh
@@ -87,6 +89,13 @@ jobs:
           echo "dat_date=$name" | Out-File -FilePath $env:GITHUB_ENV
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
+
+      - name: Run main.py
+        run: |
+          python main.py  # 这里假设你的 main.py 是在根目录下
+          mv ip_info_output.txt qqwry.dat
+          cp qqwry.dat ../qqwry.dat  # 复制文件到上级目录下
+
       - name: Check if tag exists
         run: |
           git fetch --tags
@@ -95,11 +104,12 @@ jobs:
             echo "Tag already exists, skipping create release"
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           fi
+
       - name: Calculate file hash value
         id: calculate_hash_value
         run: |
-          echo "FILE_HASH=$(sha256sum app/qqwry.dat | awk '{ print $1 }')" >> $GITHUB_ENV
-      
+          echo "FILE_HASH=$(sha256sum qqwry.dat | awk '{ print $1 }')" >> $GITHUB_ENV
+
       - name: Create Release
         id: create_release
         uses: FW27623/release@v1
@@ -108,18 +118,20 @@ jobs:
           commit: ${{ env.GITHUB_SHA }}
           tag: ${{ env.dat_date }}
           token: ${{ secrets.qqwry }}
-          artifacts: app/qqwry.dat
+          artifacts: qqwry.dat
           body: |
-           #### qqwry.dat
-           | Name               | Value                      |
-           | :----------------: | :------------------------: |
-           | Zip Download link: | ${{ env.LINK }}            |
-           | File hash:         | qqwry.dat: ${{ env.FILE_HASH }} |
-           <p align="right"><code>Version: ${{ env.dat_date }} </code></p>
+            #### qqwry.dat
+            | Name               | Value                      |
+            | :----------------: | :------------------------: |
+            | Zip Download link: | ${{ env.LINK }}            |
+            | File hash:         | qqwry.dat: ${{ env.FILE_HASH }} |
+            <p align="right"><code>Version: ${{ env.dat_date }} </code></p>
+
       - name: Calculate repository hash value
         id: calculate_repo_hash_value
         run: |
           echo "REPO_HASH=$(git show main:qqwry.dat | sha256sum | awk '{ print $1 }')" >> $GITHUB_ENV
+
       - name: Check for changes in qqwry.dat
         id: check
         run: |
@@ -135,6 +147,7 @@ jobs:
               echo "File has not changed"
             fi
           fi
+
       - name: Commit qqwry.dat
         if: env.RUN_NEXT_STEP == 'true'
         env:
@@ -144,14 +157,6 @@ jobs:
           git config --global user.name $GIT_USERNAME
           git config --global user.email $GIT_EMAIL
           if ! git status -s | grep qqwry.dat --quiet; then
-            mv app/qqwry.dat qqwry.dat
             git add qqwry.dat
             git commit -m "Update qqwry.dat in  ${{ env.dat_date }}"
             git push
-          fi
-      - name: Run main.py
-        run: |
-          python main.py  # 这里假设你的 main.py 是在根目录下
-          mv ip_info_output.txt qqwry.dat ../  # 将文件移动到与 qqwry.dat 相同的目录
-
-  
