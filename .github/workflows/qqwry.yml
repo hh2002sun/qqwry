@@ -154,8 +154,8 @@ jobs:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
-          git config --global user.name $GIT_USERNAME
-          git config --global user.email $GIT_EMAIL
+          git config --global user.name "$GIT_USERNAME"
+          git config --global user.email "$GIT_EMAIL"
           if ! git status -s | grep qqwry.dat --quiet; then
             git add qqwry.dat
             git commit -m "Update qqwry.dat in  ${{ env.dat_date }}"
