@@ -21,26 +21,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+        
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      
       - name: Caching dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
+          restore-keys: | 
             ${{ runner.os }}-pip-
-
+      
       - name: Install dependencies
         run: |
           pip install requests
           pip install bs4
-
+      
       - name: Get download link from WeChat tweet
         run: |
           link=$(python qqwry.py)
@@ -49,7 +49,7 @@ jobs:
             exit 0
           fi
           echo "LINK=${link}" >> $GITHUB_ENV
-
+      
       - name: Use link to download newest Zip with retry
         run: |
           link=${{ env.LINK }}
@@ -65,14 +65,13 @@ jobs:
             retries=$((retries+1))
             sleep 10
           done
-
       - name: Cache innoextract
         uses: actions/cache@v3
         id: cache-innoextract
         with:
           path: innoextract
           key: ${{ runner.os }}-innoextract-${{ env.innoextract_version }}
-
+      
       - name: Download innoextract
         if: steps.cache-innoextract.outputs.cache-hit != 'true'
         run: |
@@ -80,21 +79,25 @@ jobs:
           tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.arch }}/innoextract --strip-components 3
 
       - name: Get qqwry.dat
-        id: dat_date
         shell: pwsh
         run: |
           $zip = (Get-ChildItem Downloads\*.zip)[0].FullName
-          $filename = (Get-ChildItem Downloads\*.zip)[0].Name
-          $name = $filename.Substring($filename.IndexOf('-') + 1 , $filename.length - $filename.IndexOf('-') - 5)
-          echo "dat_date=$name" | Out-File -FilePath $env:GITHUB_ENV
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
+          mv app/qqwry.dat .
 
-      - name: Run main.py
+      - name: Execute main.py
+        run: python main.py
+        # 这里执行 main.py 脚本
+
+      - name: Commit qqwry.dat and ip_info_output.txt
         run: |
-          python main.py  # 这里假设你的 main.py 是在根目录下
-          mv ip_info_output.txt qqwry.dat
-          cp qqwry.dat ../qqwry.dat  # 复制文件到上级目录下
+          git config --global user.name ${{ secrets.GIT_USERNAME }}
+          git config --global user.email ${{ secrets.GIT_EMAIL }}
+          git add qqwry.dat ip_info_output.txt
+          git commit -m "Update qqwry.dat and ip_info_output.txt"
+          git push
+        # 提交 qqwry.dat 和 ip_info_output.txt 文件
 
       - name: Check if tag exists
         run: |
