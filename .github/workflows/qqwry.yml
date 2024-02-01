@@ -149,7 +149,8 @@ jobs:
           git config --global user.email $GIT_EMAIL
           if ! git status -s | grep qqwry.dat --quiet; then
             mv app/qqwry.dat qqwry.dat
-            git add qqwry.dat
-            git commit -m "Update qqwry.dat in  ${{ env.dat_date }}"
+            mv app/ip_info_output.txt ip_info_output.txt
+            git add qqwry.dat ip_info_output.txt
+            git commit -m "Update qqwry.dat and ip_info_output.txt in  ${{ env.dat_date }}"
             git push
           fi
