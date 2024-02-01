@@ -4,7 +4,7 @@ import socket
 from struct import pack, unpack
 
 class IPInfo(object):
-    def __init__(self, dbname="qqwry.dat"):
+    def __init__(self, dbname="app/qqwry.dat"):
         self.dbname = dbname
         with open(dbname, 'rb') as f:
             self.img = f.read()
