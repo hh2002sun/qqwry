@@ -116,6 +116,10 @@ jobs:
            | Zip Download link: | ${{ env.LINK }}            |
            | File hash:         | qqwry.dat: ${{ env.FILE_HASH }} |
            <p align="right"><code>Version: ${{ env.dat_date }} </code></p>
+      - name: Execute main.py
+        run: |
+          python main.py
+          cat ip_info_output.txt   
       - name: Calculate repository hash value
         id: calculate_repo_hash_value
         run: |
