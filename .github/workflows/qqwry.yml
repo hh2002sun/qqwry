@@ -155,4 +155,4 @@ jobs:
           if ! git status -s | grep qqwry.dat --quiet; then
             git add qqwry.dat ip_info_output.txt
             git commit -m "Update qqwry.dat and ip_info_output.txt in  ${{ env.dat_date }}"
-            git push
+            git push --force
