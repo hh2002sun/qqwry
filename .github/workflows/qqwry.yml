@@ -40,6 +40,7 @@ jobs:
         run: |
           pip install requests
           pip install bs4
+          python qqwry.py
       
       - name: Get download link from WeChat tweet
         run: |
